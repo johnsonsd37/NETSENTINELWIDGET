@@ -3,23 +3,31 @@ name: Build Windows EXE
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: windows-latest
-    permissions:
-      contents: read
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - name: Download project
+        uses: actions/checkout@v4
+
+      - name: Install .NET 8
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - name: Build standalone Windows executable
-        run: dotnet publish NetSentinelWidget.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
-      - name: Upload executable
+
+      - name: Build Windows EXE
+        run: dotnet publish NetSentinelWidget.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+
+      - name: Upload Windows EXE
         uses: actions/upload-artifact@v4
         with:
-          name: NetSentinelWidget-Windows
+          name: NetSentinelWidget-Windows-Fixed
           path: publish/NetSentinelWidget.exe
           if-no-files-found: error
