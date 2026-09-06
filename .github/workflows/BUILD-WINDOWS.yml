@@ -1,4 +1,8 @@
- - uses: actions/setup-dotnet@v4
+  - name: Download project
+    uses: actions/checkout@v4
+
+  - name: Install .NET 8
+    uses: actions/setup-dotnet@v4
     with:
       dotnet-version: 8.0.x
 
@@ -10,3 +14,4 @@
     with:
       name: NetSentinelWidget-Windows
       path: publish/NetSentinelWidget.exe
+      if-no-files-found: error
